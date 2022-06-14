@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-i0l0r^1c4^)234w^_fgjz=!pfwqamux!!omeutx4x@n4c7f)cu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'localhost', 'mudrika.herokuapp.com']
 
 
 # Application definition
