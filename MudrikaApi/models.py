@@ -24,7 +24,9 @@ class Sudu(models.Model):
             to_assign = to_assign+str(Sudu.objects.all().count())
 
         self.slug = to_assign
-        super().save(**args, **kwargs)
+        super().save(*args, **kwargs)
+
+       # super().save(**args,**kwargs)
 
 
 class subscribers(models.Model):
