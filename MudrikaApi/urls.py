@@ -1,6 +1,8 @@
 from django.urls import path
-from .views import SuduListAPIView
+from .views import *
 
 urlpatterns = [
-    path('mudrika/', SuduListAPIView.as_view(), name='mudrika')
+    path('', SuduListAPIView.as_view(), name='mudrika'),
+    path('example/', ExampleView, name="example")
+
 ]
