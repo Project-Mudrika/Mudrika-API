@@ -1,7 +1,8 @@
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse
 from django.core import serializers
-
+from django.views.decorators.csrf import csrf_exempt
+from pydantic import Json
 from rest_framework import generics
 from .models import UserProfileDummy, Sudu
 from .serializer import subscriberserializer, suduserializer
@@ -44,7 +45,22 @@ def fetch_user_data(request):
             return JsonResponse({"data": "Account ID (Wallet ID) not provided"}, status=400)
 
 
+@csrf_exempt
 def register_new_user(request):
+
+    if request.method == "POST":
+        received_payload = json.loads(request.body)
+        print(received_payload)
+    else:
+        received_payload = {"name": "test", "age": 21}
+    try:
+        payload = {'accid':
+                   '123', 'level': "district", 'fname': "arya",
+                   'lname': "sreejith", 'state': "kerala", 'district': "tvm", 'username': "arya"}
+
+    except Exception as e:
+        raise e
+        # return Response(data={"Data": "Add Employee  Failed", "Error": str(r.status_code)}, status=status.HTTP_201_CREATED)
     # Payload format
     #  {'accid': acid, 'level': level, 'fname': fnam, 'lname': lnam, 'state': sta, 'district': dis, 'username': user}
-    return None
+    return JsonResponse(received_payload)

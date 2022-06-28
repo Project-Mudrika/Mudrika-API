@@ -11,9 +11,9 @@ key: str = os.environ.get("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
 
-def insert_into_db(insert_data):
+def insert_into_db(received_payload):
     data = supabase.table('authority').insert(
-        insert_data).execute()
+        received_payload).execute()
     return data
 
 
