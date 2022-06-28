@@ -1,3 +1,4 @@
+import os
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse
 from django.core import serializers
@@ -19,7 +20,6 @@ class SuduListAPIView(generics.ListAPIView):
 
 def ExampleView(request):
     example_id = request.GET.get('walletid', '')
-
     user = UserProfileDummy.objects.filter(acc_address=example_id).values()[0]
     # new_var = {
     # "wallet_id_return_value": example_id,
