@@ -11,9 +11,9 @@ key: str = os.environ.get("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
 
-def insert_into_db(acid, level, fnam, lnam, sta, dis, user):
+def insert_into_db(insert_data):
     data = supabase.table('authority').insert(
-        {'accid': acid, 'level': level, 'fname': fnam, 'lname': lnam, 'state': sta, 'district': dis, 'username': user}).execute()
+        insert_data).execute()
     return data
 
 
@@ -24,15 +24,13 @@ def fetch_all_data():
     print('\n')
     return data
 
+
 def fetch_single_user_data(accid):
-    data1 = supabase.table('authority').select('accid,level,fname,lname,state,district, username').eq('accid',accid).execute()
+    data1 = supabase.table('authority').select(
+        'accid,level,fname,lname,state,district, username').eq('accid', accid).execute()
     #assert len(data.get("data", [])) > 0
     print(data1)
     return data1
-
-
-
-
 
     # insert_into_db("1009", "national", "Devu", "diya", "kerala", "tvm", "devudiya")
     # fetch_all_data()
