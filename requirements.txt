@@ -1,5 +1,5 @@
-Django==4.0.5
+Django==3.2.5
 djangorestframework==3.13.1
-pydantic==1.9.1
+pydantic==1.8.2
 python-dotenv==0.20.0
 supabase==0.5.8
