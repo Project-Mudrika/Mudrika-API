@@ -9,8 +9,8 @@ from rest_framework import generics
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 
-from .models import AccessLevelTokenDummy, Sudu, UserProfileDummy
-from .forms import AccessLevelForm
+from .models import AccessLevelTokenData, Sudu, UserProfileSignUpData
+from .forms import AccessLevelForm, SignUpForm
 from .serializer import subscriberserializer, suduserializer
 from .supabase_client import *
 
@@ -28,7 +28,8 @@ class SuduListAPIView(generics.ListAPIView):
 
 def fetch_all_user_data(request):
     example_id = request.GET.get('walletid', '')
-    user = UserProfileDummy.objects.filter(acc_address=example_id).values()[0]
+    user = UserProfileSignUpData.objects.filter(
+        acc_address=example_id).values()[0]
     # new_var = {
     # "wallet_id_return_value": example_id,
     # "user": name
@@ -52,60 +53,86 @@ def fetch_user_data(request):
 
 
 @csrf_exempt
-def register_new_user(request):
-
-    if request.method == "POST":
-        received_payload = json.loads(request.body)
-        print(received_payload)
-    else:
-        return JsonResponse({"response": "Invalid Request. Send POST request only to /register"}, status=400)
-    try:
-        payload = {'accid': '123', 'level': "district", 'fname': "arya",
-                   'lname': "sreejith", 'state': "kerala", 'district': "tvm", 'username': "arya"}
-
-    except Exception as e:
-        raise e
-        # return Response(data={"Data": "Add Employee  Failed", "Error": str(r.status_code)}, status=status.HTTP_201_CREATED)
-    # Payload format
-    #  {'accid': acid, 'level': level, 'fname': fnam, 'lname': lnam, 'state': sta, 'district': dis, 'username': user}
-    return JsonResponse(received_payload)
-
-
-@csrf_exempt
 @api_view(["POST"])
 @parser_classes([MultiPartParser])
 def generate_new_access_token(request, format=None):
     if request.method == "POST":
-        form_obj = AccessLevelForm(request.POST)
-        if form_obj.is_valid():
+        access_form = AccessLevelForm(request.POST)
+        if access_form.is_valid():
             new_access_token = ''.join(random.choices(string.ascii_uppercase +
                                                       string.digits, k=20))
-
-            print(new_access_token)
-
-            response_obj = form_obj.cleaned_data
+            response_obj = access_form.cleaned_data
             response_obj['access_phrase'] = new_access_token
 
-            newAccessLevelToken = AccessLevelTokenDummy(**response_obj)
+            newAccessLevelToken = AccessLevelTokenData(**response_obj)
             newAccessLevelToken.save()
             return JsonResponse(response_obj)
         else:
-            form_error = form_obj.errors
+            form_error = access_form.errors
             return JsonResponse(form_error, status=400)
     else:
         return JsonResponse({"response": "Invalid Request. Send POST request only to /new-access-token"}, status=400)
 
 
-@api_view(["GET"])
-def get_access_level(request):
-    try:
-        access_level_token = request.GET.get("token", "")
-    except Exception as e:
-        return JsonResponse({"Error": e}, status=400)
-    else:
-        if access_level_token:
-            access_level = AccessLevelTokenDummy.objects.filter(
+def get_access_level(request, internal_call: bool = False, access_level_token: str = None):
+    if internal_call:
+        try:
+            access_level = AccessLevelTokenData.objects.filter(
                 access_phrase=access_level_token).values()[0]
-            return JsonResponse(access_level, safe=False)
+            return access_level
+        except:
+            return {}
+    else:
+        try:
+            access_level_token = request.GET.get("token", "")
+        except Exception as e:
+            return JsonResponse({"Error": e}, status=400)
         else:
-            return JsonResponse({"Error": "Access Key Not Provided"}, status=400)
+            if access_level_token:
+                try:
+                    access_level = AccessLevelTokenData.objects.filter(
+                        access_phrase=access_level_token).values()[0]
+                    return JsonResponse(access_level)
+                except:
+                    return JsonResponse({"Error": "Access Key Not Found"}, status=404)
+            else:
+                return JsonResponse({"Error": "Access Key Not Provided"}, status=400)
+
+
+@csrf_exempt
+def register_new_user(request):
+
+    if request.method == "POST":
+        sign_up_form = SignUpForm(request.POST)
+        if sign_up_form.is_valid():
+            # sign up form data
+            # {
+            #   "acc_address": "577g9H03rH09kT6hf",
+            #   "first_name": "Sudev",
+            #   "last_name": "Suresh Sreedevi",
+            #   "username": "sudevssuresh",
+            #   "access_level_token": "7687yodf08ha"
+            # }
+            access_level_token = sign_up_form.cleaned_data["access_level_token"]
+            access_level = get_access_level(request, True, access_level_token)
+            if access_level == {}:
+                return JsonResponse({"error": "Access Key Invalid or Not Found"}, status=400)
+
+            response_obj = sign_up_form.cleaned_data
+
+            # Removing access level token and token creation time from response object
+            del response_obj["access_level_token"]
+            del access_level["access_phrase"]
+            del access_level["created_at"]
+
+            response_obj = {**response_obj, **access_level}
+
+            return JsonResponse(response_obj)
+        else:
+            form_error = sign_up_form.errors
+            return JsonResponse(form_error, status=400)
+    else:
+        return JsonResponse({"error": "Invalid Request. Send POST request only to /register"}, status=400)
+
+        # payload = {'accid': '123', 'level': "district", 'fname': "arya",
+        #            'lname': "sreejith", 'state': "kerala", 'district': "tvm", 'username': "arya"}
