@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import CharField, ValidationError
 from django.template.defaultfilters import slugify
 
 # Create your models here.
@@ -17,6 +18,29 @@ class UserProfileDummy(models.Model):
 
     class Meta:
         ordering = ('-created_at',)
+
+
+class AccessLevelTokenDummy(models.Model):
+    access_phrase = models.CharField(max_length=20, primary_key=True)
+    access_level_choices = [
+        ('national', 'NATIONAL'),
+        ('state', 'STATE'),
+        ('district', 'DISTRICT')
+    ]
+    access_level = models.CharField(
+        max_length=8, null=False, choices=access_level_choices, default='district', blank=False)
+    state = models.CharField(max_length=20, null=True, blank=True)
+    district = models.CharField(max_length=42, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('-created_at',)
+
+    def clean(self):
+        if (self.access_level == "state" or self.access_level == "district") and not self.state:
+            raise ValidationError("State not provided!")
+        elif self.access_level == "district" and not self.district:
+            raise ValidationError("District not provided!")
 
 
 class Sudu(models.Model):

@@ -5,6 +5,7 @@ from .models import *
 admin.site.register(Sudu)
 admin.site.register(subscribers)
 admin.site.register(UserProfileDummy)
+admin.site.register(AccessLevelTokenDummy)
 
 
 class UserProfileDummyAdmin(admin.ModelAdmin):
