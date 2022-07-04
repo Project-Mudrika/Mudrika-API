@@ -1,26 +1,25 @@
 from django.db import models
-from django.forms import CharField, ValidationError
+from django.forms import ValidationError
 from django.template.defaultfilters import slugify
 
 # Create your models here.
+
 # 0xd1CfE5c03730C4F93ag76a7d8424bA9122Bb4742
 
 
-class UserProfileDummy(models.Model):
+class UserProfileSignUpData(models.Model):
     acc_address = models.CharField(max_length=50, primary_key=True)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
-    state = models.CharField(max_length=60)
-    district = models.CharField(max_length=60)
     username = models.CharField(max_length=24)
-    type_phrase = models.CharField(max_length=16)
+    access_level_token = models.CharField(max_length=20, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ('-created_at',)
 
 
-class AccessLevelTokenDummy(models.Model):
+class AccessLevelTokenData(models.Model):
     access_phrase = models.CharField(max_length=20, primary_key=True)
     access_level_choices = [
         ('national', 'NATIONAL'),
