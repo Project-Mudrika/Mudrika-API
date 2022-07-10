@@ -17,16 +17,16 @@ from .supabase_client import *
 # Create your views here.
 
 
-class SuduListAPIView(generics.ListAPIView):
+# class SuduListAPIView(generics.ListAPIView):
 
-    serializer_class = suduserializer
+#     serializer_class = suduserializer
 
-    def get_queryset(self):
-        print(Sudu.objects.all())
-        return Sudu.objects.all()
+#     def get_queryset(self):
+#         print(Sudu.objects.all())
+#         return Sudu.objects.all()
 
 
-def fetch_all_user_data(request):
+def fetch_all_user_data(request) -> JsonResponse:
     example_id = request.GET.get('walletid', '')
     user = UserProfileSignUpData.objects.filter(
         acc_address=example_id).values()[0]
@@ -39,7 +39,7 @@ def fetch_all_user_data(request):
     return JsonResponse(user, safe=False)
 
 
-def fetch_user_data(request):
+def fetch_user_data(request) -> JsonResponse:
     try:
         acc_id = request.GET.get("walletid", "")
     except Exception as e:
@@ -55,7 +55,7 @@ def fetch_user_data(request):
 @csrf_exempt
 @api_view(["POST"])
 @parser_classes([MultiPartParser])
-def generate_new_access_token(request, format=None):
+def generate_new_access_token(request) -> JsonResponse:
     if request.method == "POST":
         access_form = AccessLevelForm(request.POST)
         if access_form.is_valid():
@@ -74,7 +74,7 @@ def generate_new_access_token(request, format=None):
         return JsonResponse({"response": "Invalid Request. Send POST request only to /new-access-token"}, status=400)
 
 
-def get_access_level(request, internal_call: bool = False, access_level_token: str = None):
+def get_access_level(request, internal_call: bool = False, access_level_token: str = None) -> (dict | JsonResponse):
     if internal_call:
         try:
             access_level = AccessLevelTokenData.objects.filter(
@@ -100,7 +100,7 @@ def get_access_level(request, internal_call: bool = False, access_level_token: s
 
 
 @csrf_exempt
-def register_new_user(request):
+def register_new_user(request) -> JsonResponse:
 
     if request.method == "POST":
         sign_up_form = SignUpForm(request.POST)
