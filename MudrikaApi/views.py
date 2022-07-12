@@ -26,7 +26,7 @@ from .supabase_client import *
 #         return Sudu.objects.all()
 
 
-def fetch_all_user_data(request) -> JsonResponse:
+def fetch_all_user_data(request) :
     example_id = request.GET.get('walletid', '')
     user = UserProfileSignUpData.objects.filter(
         acc_address=example_id).values()[0]
@@ -39,7 +39,7 @@ def fetch_all_user_data(request) -> JsonResponse:
     return JsonResponse(user, safe=False)
 
 
-def fetch_user_data(request) -> JsonResponse:
+def fetch_user_data(request) :
     try:
         acc_id = request.GET.get("walletid", "")
     except Exception as e:
@@ -55,7 +55,7 @@ def fetch_user_data(request) -> JsonResponse:
 @csrf_exempt
 @api_view(["POST"])
 @parser_classes([MultiPartParser])
-def generate_new_access_token(request) -> JsonResponse:
+def generate_new_access_token(request) :
     if request.method == "POST":
         access_form = AccessLevelForm(request.POST)
         if access_form.is_valid():
@@ -74,7 +74,7 @@ def generate_new_access_token(request) -> JsonResponse:
         return JsonResponse({"response": "Invalid Request. Send POST request only to /new-access-token"}, status=400)
 
 
-def get_access_level(request, internal_call: bool = False, access_level_token: str = None) -> (dict | JsonResponse):
+def get_access_level(request, internal_call: bool = False, access_level_token: str = None):
     if internal_call:
         try:
             access_level = AccessLevelTokenData.objects.filter(
@@ -100,7 +100,7 @@ def get_access_level(request, internal_call: bool = False, access_level_token: s
 
 
 @csrf_exempt
-def register_new_user(request) -> JsonResponse:
+def register_new_user(request) :
 
     if request.method == "POST":
         sign_up_form = SignUpForm(request.POST)
