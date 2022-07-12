@@ -29,7 +29,10 @@ def get_access_level(access_phrase):
     data = supabase.table('AccessLevelTokenData').select(
         'access_level').eq('access_phrase', access_phrase).execute()
 
-    return data.data[0]
+    if data:
+        return data.data[0]
+    else:
+        return {}
 
 
 def remove_access_key(access_phrase):
@@ -42,9 +45,11 @@ def remove_access_key(access_phrase):
     return res
 
 
-def insert_into_db(received_payload):
+def insert_into_db(accid, level, fname, lname, state, district, username):
+    payload = locals()
+
     data = supabase.table('authority').insert(
-        received_payload).execute()
+        payload).execute()
     return data
 
 

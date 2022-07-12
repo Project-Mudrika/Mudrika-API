@@ -27,7 +27,7 @@ contract = web3.eth.contract(address=address, abi=abi)
 MAX_GAS_ETHER = 0.0005
 
 
-def add_user(account_id, access_level, name):
+def add_user_contract(account_id, access_level, name):
     """Adds Signed up user to the contract, using Adduser() signed by admin pvt key"""
     switcher = {
         "admin": 4,
