@@ -26,7 +26,7 @@ from .supabase_client import *
 #         return Sudu.objects.all()
 
 
-def fetch_all_user_data(request) :
+def fetch_all_user_data(request):
     example_id = request.GET.get('walletid', '')
     user = UserProfileSignUpData.objects.filter(
         acc_address=example_id).values()[0]
@@ -39,7 +39,7 @@ def fetch_all_user_data(request) :
     return JsonResponse(user, safe=False)
 
 
-def fetch_user_data(request) :
+def fetch_user_data(request):
     try:
         acc_id = request.GET.get("walletid", "")
     except Exception as e:
@@ -55,7 +55,10 @@ def fetch_user_data(request) :
 @csrf_exempt
 @api_view(["POST"])
 @parser_classes([MultiPartParser])
-def generate_new_access_token(request) :
+def generate_new_access_token(request):
+    """
+    Function to generate various authority level based access tokens for completing the sign up of users
+    """
     if request.method == "POST":
         access_form = AccessLevelForm(request.POST)
         if access_form.is_valid():
@@ -64,9 +67,13 @@ def generate_new_access_token(request) :
             response_obj = access_form.cleaned_data
             response_obj['access_phrase'] = new_access_token
 
-            newAccessLevelToken = AccessLevelTokenData(**response_obj)
-            newAccessLevelToken.save()
-            return JsonResponse(response_obj)
+            try:
+                insert_into_access_level(**response_obj)
+                return JsonResponse(response_obj)
+
+            except Exception as e:
+                return JsonResponse(Exception)
+
         else:
             form_error = access_form.errors
             return JsonResponse(form_error, status=400)
@@ -74,33 +81,8 @@ def generate_new_access_token(request) :
         return JsonResponse({"response": "Invalid Request. Send POST request only to /new-access-token"}, status=400)
 
 
-def get_access_level(request, internal_call: bool = False, access_level_token: str = None):
-    if internal_call:
-        try:
-            access_level = AccessLevelTokenData.objects.filter(
-                access_phrase=access_level_token).values()[0]
-            return access_level
-        except:
-            return {}
-    else:
-        try:
-            access_level_token = request.GET.get("token", "")
-        except Exception as e:
-            return JsonResponse({"Error": e}, status=400)
-        else:
-            if access_level_token:
-                try:
-                    access_level = AccessLevelTokenData.objects.filter(
-                        access_phrase=access_level_token).values()[0]
-                    return JsonResponse(access_level)
-                except:
-                    return JsonResponse({"Error": "Access Key Not Found"}, status=404)
-            else:
-                return JsonResponse({"Error": "Access Key Not Provided"}, status=400)
-
-
 @csrf_exempt
-def register_new_user(request) :
+def register_new_user(request):
 
     if request.method == "POST":
         sign_up_form = SignUpForm(request.POST)
@@ -114,18 +96,16 @@ def register_new_user(request) :
             #   "access_level_token": "7687yodf08ha"
             # }
             access_level_token = sign_up_form.cleaned_data["access_level_token"]
-            access_level = get_access_level(request, True, access_level_token)
-            if access_level == {}:
+            access_level = get_access_level(access_level_token)
+
+            if not access_level:
                 return JsonResponse({"error": "Access Key Invalid or Not Found"}, status=400)
 
             response_obj = sign_up_form.cleaned_data
 
-            # Removing access level token and token creation time from response object
-            del response_obj["access_level_token"]
-            del access_level["access_phrase"]
-            del access_level["created_at"]
+            remove_access_key(access_level_token)
 
-            response_obj = {**response_obj, **access_level}
+            # response_obj = {**response_obj, **access_level}
 
             return JsonResponse(response_obj)
         else:
