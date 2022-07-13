@@ -29,7 +29,7 @@ def get_access_level(access_phrase):
     data = supabase.table('AccessLevelTokenData').select(
         'access_level').eq('access_phrase', access_phrase).execute()
 
-    if data:
+    if data.data != []:
         return data.data[0]
     else:
         return {}

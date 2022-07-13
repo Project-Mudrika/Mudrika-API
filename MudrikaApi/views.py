@@ -10,22 +10,12 @@ from rest_framework import generics
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 
-from .models import AccessLevelTokenData, Sudu, UserProfileSignUpData
+from .models import AccessLevelTokenData, UserProfileSignUpData
 from .forms import AccessLevelForm, SignUpForm
-from .serializer import subscriberserializer, suduserializer
 from .supabase_client import *
 from .contract_client import *
 
 # Create your views here.
-
-
-# class SuduListAPIView(generics.ListAPIView):
-
-#     serializer_class = suduserializer
-
-#     def get_queryset(self):
-#         print(Sudu.objects.all())
-#         return Sudu.objects.all()
 
 
 def fetch_all_user_data(request):
@@ -74,7 +64,7 @@ def generate_new_access_token(request):
                 return JsonResponse(response_obj)
 
             except Exception as e:
-                return JsonResponse(str(Exception), status = 400)
+                return JsonResponse(str(Exception), status=400)
 
         else:
             form_error = access_form.errors
@@ -107,8 +97,6 @@ def register_new_user(request):
             response_obj = sign_up_form.cleaned_data
             name = response_obj['first_name'] + response_obj['last_name']
 
-            remove_access_key(access_level_token)
-
             # store the user details into the database
             insert_into_db(
                 accid=response_obj.get('acc_address'),
@@ -125,6 +113,7 @@ def register_new_user(request):
                 account_id=response_obj['acc_address'], access_level=access_level, name=name)
 
             # response_obj = {**response_obj, **access_level}
+            remove_access_key(access_level_token)
 
             return JsonResponse(response_obj)
         else:
