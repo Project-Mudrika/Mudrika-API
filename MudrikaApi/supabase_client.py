@@ -86,5 +86,5 @@ def fetch_single_user_data(accid):
 
 def get_national_officers():
     officers = supabase.table('authority').select(
-        'fname, lname').eq('level', 'national').execute()
+        'accid, fname, lname').eq('level', 'national').execute()
     return list(officers)[0][1]
