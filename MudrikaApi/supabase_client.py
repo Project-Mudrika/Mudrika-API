@@ -82,3 +82,9 @@ def fetch_single_user_data(accid):
     # bulk insert
     # data = supabase.table('cities').insert([
     # {'name': 'Gotham', 'country_id': 556 },
+
+
+def get_national_officers():
+    officers = supabase.table('authority').select(
+        'fname, lname').eq('level', 'national').execute()
+    return list(officers)[0][1]

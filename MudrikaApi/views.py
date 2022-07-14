@@ -44,6 +44,13 @@ def fetch_user_data(request):
             return JsonResponse({"data": "Account ID (Wallet ID) not provided"}, status=400)
 
 
+def fetch_national_officer_data(request):
+    try:
+        return JsonResponse({"data": get_national_officers()})
+    except Exception as e:
+        return JsonResponse({"Error in Request": e}, status=400)
+
+
 @csrf_exempt
 @api_view(["POST"])
 @parser_classes([MultiPartParser])
