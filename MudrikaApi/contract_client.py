@@ -62,9 +62,40 @@ def add_user_contract(account_id, access_level, name):
     tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
     tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
 
+    send_gas_receipt = send_tokens_for_gas(account_id)
+    print(send_gas_receipt)
+
     # print(tx_receipt)
     return tx_receipt
 
 
-# add_user("0x4A1F47a15831A5f4Cf627414BF57145B0b47de1a",
-#          "national", "Api test account")
+def send_tokens_for_gas(account_id):
+    """
+    Sends a small amount of tokens to be able to pay for gas for request fund transactions
+    """
+
+    nonce = web3.eth.get_transaction_count(admin_account_id)
+
+    transaction = {
+        'to': account_id,
+        'value': web3.toWei('0.001', 'ether'),
+        'chainId': 4,
+        'gas': 70000,
+        'maxFeePerGas': web3.toWei('2', 'gwei'),
+        'maxPriorityFeePerGas': web3.toWei('1', 'gwei'),
+        'nonce': nonce,
+    }
+
+    signed = web3.eth.account.sign_transaction(transaction, pvt_key)
+
+    try:
+        res = web3.eth.send_raw_transaction(signed.rawTransaction)
+        print("success")
+        return res.hex()
+
+    except Exception as e:
+        print(e)
+
+
+# add_user_contract("0xeD1F0d3e0B33Fab9bc223cd19cE7CC13EA6De62b",
+#                   "state", "State #1")
