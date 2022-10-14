@@ -1,3 +1,4 @@
+from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.template.defaultfilters import slugify
 
@@ -14,6 +15,15 @@ class UserProfileDummy(models.Model):
     username = models.CharField(max_length=24)
     type_phrase = models.CharField(max_length=16)
     created_at = models.DateTimeField(auto_now_add=True)
+
+class DriverProfile(models.Model):
+    wallet_id = models.CharField(max_length=50, primary_key=True)
+    first_name = models.CharField(max_length=35)
+    last_name = models.CharField(max_length=35)
+    state = models.CharField(max_length=35)
+    district = models.CharField(_max_length=35)
+    mobile_number = models.IntegerField(blank=True)
+
 
     class Meta:
         ordering = ('-created_at',)
