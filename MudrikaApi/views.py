@@ -1,5 +1,6 @@
 import json
 import random
+import re
 import string
 from urllib import response
 
@@ -131,3 +132,64 @@ def register_new_user(request):
 
         # payload = {'accid': '123', 'level': "district", 'fname': "arya",
         #            'lname': "sreejith", 'state': "kerala", 'district': "tvm", 'username': "arya"}
+def fetch_driver_data(request):
+    try:
+        acc_add = request.GET.get("account_address","")
+    except Exception as e:
+        return JsonResponse({"Error in Response",e},status=400)
+    else:
+        if acc_add:
+            data= json.loads(fetch_single_driver_data(acc_add).json())
+            return JsonResponse(data)
+        else:
+            return JsonResponse({"data": "Account ID (Wallet ID) not provided"}, status=400)
+
+
+# @csrf_exempt
+# def register_new_driver(request):
+
+#     if request.method == "POST":
+#         sign_up_form = SignUpForm(request.POST)
+#         if sign_up_form.is_valid():
+#             # sign up form data
+#             # {
+#             #   "acc_address": "577g9H03rH09kT6hf",
+#             #   "first_name": "Sudev",
+#             #   "last_name": "Suresh Sreedevi",
+#             #   "username": "sudevssuresh",
+#             #   "access_level_token": "7687yodf08ha"
+#             # }
+#             access_level_token = sign_up_form.cleaned_data["access_level_token"]
+#             access_level = get_access_level(
+#                 access_level_token).get('access_level')
+
+#             if not access_level:
+#                 return JsonResponse({"error": "Access Key Invalid or Not Found"}, status=400)
+
+#             response_obj = sign_up_form.cleaned_data
+#             name = response_obj['first_name'] + response_obj['last_name']
+
+#             # store the user details into the database
+#             insert_into_db(
+#                 accid=response_obj.get('acc_address'),
+#                 username=response_obj.get('username'),
+#                 level=access_level,
+#                 state=response_obj.get('state'),
+#                 district=response_obj.get('district'),
+#                 fname=response_obj.get('first_name'),
+#                 lname=response_obj.get('last_name')
+#             )
+
+#             # add the user access details into contract
+#             add_user_contract(
+#                 account_id=response_obj['acc_address'], access_level=access_level, name=name)
+
+#             # response_obj = {**response_obj, **access_level}
+#             remove_access_key(access_level_token)
+
+#             return JsonResponse(response_obj)
+#         else:
+#             form_error = sign_up_form.errors
+#             return JsonResponse(form_error, status=400)
+#     else:
+#         return JsonResponse({"error": "Invalid Request. Send POST request only to /register"}, status=400)
