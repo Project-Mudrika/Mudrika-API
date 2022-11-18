@@ -12,14 +12,20 @@ async def echo(websocket):
         print(message)
         class_list = dict()
         temp = message.split(':')
-        class_list['latitude'] = temp[0]
-        class_list['longitude'] = temp[1]
-        class_list['driver_id'] = temp[2]
-        print(class_list)
-        location_data.update({temp[2]: [temp[0], temp[1]]})
-        await websocket.send(message)
-        print(location_data.get(temp[2]))
+        class_list['action'] = temp[0]
+        if(temp[0]=='update'):
 
+            class_list['latitude'] = temp[2]
+            class_list['longitude'] = temp[3]
+            class_list['driver_id'] = temp[1]
+            location_data.update({temp[1]: [temp[2], temp[3]]})
+            await websocket.send('jiii')
+        elif(temp[0]=='get'):
+            print(location_data.get(temp[1]))
+            loc=location_data.get(temp[1])
+            location=f"{temp[1]}:{loc[0]}:{loc[1]}"
+            await websocket.send(location)
+        
 
 async def main():
     async with websockets.serve(echo, "localhost", 8765):

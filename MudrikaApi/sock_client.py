@@ -9,6 +9,7 @@ async def hello():
                 'Enter latitude,longitude & driverid separated by ":" ')
 
             await websocket.send(data)
-            await websocket.recv()
+            msg = await websocket.recv()
+            print(msg)
 
 asyncio.run(hello())
