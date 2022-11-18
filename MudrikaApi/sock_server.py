@@ -2,10 +2,12 @@ import asyncio
 import websockets
 
 location_data = {}
+USERS = set()
 
 
 async def echo(websocket):
     global location_data
+    USERS.add(websocket)
     async for message in websocket:
         print(message)
         class_list = dict()
