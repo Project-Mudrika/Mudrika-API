@@ -1,4 +1,3 @@
-from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.forms import ValidationError
 from django.template.defaultfilters import slugify
@@ -17,17 +16,14 @@ class UserProfileSignUpData(models.Model):
         max_length=20, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+
 class DriverProfile(models.Model):
     wallet_id = models.CharField(max_length=50, primary_key=True)
     first_name = models.CharField(max_length=35)
     last_name = models.CharField(max_length=35)
     state = models.CharField(max_length=35)
-    district = models.CharField(_max_length=35)
+    district = models.CharField(max_length=35)
     mobile_number = models.IntegerField(blank=True)
-
-
-    class Meta:
-        ordering = ('-created_at',)
 
 
 class AccessLevelTokenData(models.Model):
