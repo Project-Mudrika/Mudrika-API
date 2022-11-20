@@ -3,5 +3,5 @@ services:
     name: Mudrika
     env: python
     buildCommand: "pip3 install -r requirements.txt && python manage.py migrate --no-input"
-    startCommand: "gunicorn Mudrika.wsgi:application"
+    startCommand: "gunicorn wsgi:application"
     autoDeploy: true
