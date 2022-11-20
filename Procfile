@@ -1,1 +1,1 @@
-web: gunicorn Mudrika.wsgi
+web: gunicorn Mudrika.wsgi:application
