@@ -22,7 +22,7 @@ def insert_into_access_level(access_level, state, district, access_phrase):
     return res
 
 
-def insert_into_consignment(cons_id, con_name, quantity, location, sender, receiver):
+def insert_into_consignment(cons_id, con_name, quantity, location, sender, curr_holder, receiver):
     """
     Insert consignment details into db
     """

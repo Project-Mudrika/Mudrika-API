@@ -220,6 +220,8 @@ def new_consignment(request):
                 location=consignment_data.get("location"),
                 quantity=consignment_data.get("quantity"),
                 sender=consignment_data.get("sender"),
+                # sender is the current holder when consignment is newly created
+                curr_holder=consignment_data.get("sender"),
                 receiver=consignment_data.get("receiver"),
             )
             qr_string = consignment_data["cons_id"] + ";" + \
