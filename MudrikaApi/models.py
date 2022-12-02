@@ -17,6 +17,15 @@ class UserProfileSignUpData(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class NewConsignmentData(models.Model):
+    cons_id = models.CharField(max_length=32, primary_key=True)
+    con_name = models.CharField(max_length=50)
+    quantity = models.CharField(max_length=16)
+    location = models.CharField(max_length=60)
+    sender = models.CharField(max_length=45)
+    receiver = models.CharField(max_length=45)
+
+
 class DriverProfile(models.Model):
     wallet_id = models.CharField(max_length=50, primary_key=True)
     first_name = models.CharField(max_length=35)

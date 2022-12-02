@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import UserProfileSignUpData, AccessLevelTokenData
+from .models import UserProfileSignUpData, AccessLevelTokenData, NewConsignmentData
 
 
 class AccessLevelForm(ModelForm):
@@ -11,4 +11,10 @@ class AccessLevelForm(ModelForm):
 class SignUpForm(ModelForm):
     class Meta:
         model = UserProfileSignUpData
+        fields = "__all__"
+
+
+class ConsignmentForm(ModelForm):
+    class Meta:
+        model = NewConsignmentData
         fields = "__all__"
