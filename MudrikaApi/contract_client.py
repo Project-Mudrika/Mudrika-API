@@ -17,7 +17,7 @@ admin_account_id: str = os.environ.get("ADMIN_ACCOUNT_ID")
 web3 = Web3(Web3.HTTPProvider(rpc_url))
 
 # Initialising the Contract
-address = web3.toChecksumAddress(contract_id)
+address = web3.to_checksum_address(contract_id)
 abi = ""
 with open(os.getcwd() + "/MudrikaApi/mudrika.json", 'r') as j:
     abi = json.loads(j.read())["abi"]

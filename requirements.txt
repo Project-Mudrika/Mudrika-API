@@ -4,7 +4,7 @@ python-dotenv==0.20.0
 supabase==0.7.1
 gunicorn==20.1.0
 django-cors-headers==3.13.0
-web3==6.0.0b1
+web3==6.0.0b8
 websockets==10.4
 pypng==0.20220715.0
 PyQRCode==1.2.1
