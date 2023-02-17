@@ -37,7 +37,7 @@ def add_user_contract(account_id, access_level, name):
         "public": 0
     }
 
-    account_id = web3.toChecksumAddress(account_id)
+    account_id = web3.to_checksum_address(account_id)
     user_type = switcher.get(access_level)
 
     nonce = web3.eth.get_transaction_count(
@@ -45,14 +45,14 @@ def add_user_contract(account_id, access_level, name):
 
     transaction = contract.functions.addUser(
         account_id, user_type, name).build_transaction({
-            'chainId': 4,
+            'chainId': 80001,
             'gas': 70000,
-            'maxFeePerGas': web3.toWei('2', 'gwei'),
-            'maxPriorityFeePerGas': web3.toWei('1', 'gwei'),
+            'maxFeePerGas': web3.to_wei('2', 'gwei'),
+            'maxPriorityFeePerGas': web3.to_wei('1', 'gwei'),
             'nonce': nonce,
         })
 
-    gas_price = float(web3.fromWei(web3.eth.gas_price, 'ether'))
+    gas_price = float(web3.from_wei(web3.eth.gas_price, 'ether'))
     allowed_gas = int(MAX_GAS_ETHER/gas_price)
 
     transaction.update({'gas': allowed_gas})
@@ -78,11 +78,11 @@ def send_tokens_for_gas(account_id):
 
     transaction = {
         'to': account_id,
-        'value': web3.toWei('0.001', 'ether'),
-        'chainId': 4,
+        'value': web3.to_wei('0.001', 'ether'),
+        'chainId': 80001,
         'gas': 70000,
-        'maxFeePerGas': web3.toWei('2', 'gwei'),
-        'maxPriorityFeePerGas': web3.toWei('1', 'gwei'),
+        'maxFeePerGas': web3.to_wei('2', 'gwei'),
+        'maxPriorityFeePerGas': web3.to_wei('1', 'gwei'),
         'nonce': nonce,
     }
 
