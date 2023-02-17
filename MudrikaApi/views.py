@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 
 from .models import AccessLevelTokenData, UserProfileSignUpData
-from .forms import AccessLevelForm, SignUpForm, ConsignmentForm
+from .forms import AccessLevelForm, SignUpForm, ConsignmentForm, VolunteerSignUpForm
 from .supabase_client import *
 from .contract_client import *
 
@@ -81,7 +81,7 @@ def generate_new_access_token(request):
 
 
 @csrf_exempt
-def register_new_user(request):
+def register_new_officer(request):
 
     if request.method == "POST":
         sign_up_form = SignUpForm(request.POST)
@@ -105,7 +105,7 @@ def register_new_user(request):
             name = response_obj['first_name'] + response_obj['last_name']
 
             # store the user details into the database
-            insert_into_db(
+            insert_into_db_officer(
                 accid=response_obj.get('acc_address'),
                 username=response_obj.get('username'),
                 level=access_level,
@@ -127,10 +127,27 @@ def register_new_user(request):
             form_error = sign_up_form.errors
             return JsonResponse(form_error, status=400)
     else:
-        return JsonResponse({"error": "Invalid Request. Send POST request only to /register"}, status=400)
+        return JsonResponse({"error": "Invalid Request. Send POST request only to /register/officer/"}, status=400)
 
         # payload = {'accid': '123', 'level': "district", 'fname': "arya",
         #            'lname': "sreejith", 'state': "kerala", 'district': "tvm", 'username': "arya"}
+
+
+@csrf_exempt
+def register_new_volunteer(request):
+    if request.method == "POST":
+        sign_up_form = VolunteerSignUpForm(request.POST)
+        if sign_up_form.is_valid():
+            print(f"Cleaned Data: {sign_up_form.cleaned_data}")
+
+            insert_into_db_volunteer(**sign_up_form.cleaned_data)
+
+            return JsonResponse(sign_up_form.cleaned_data, status=200)
+        else:
+            form_error = sign_up_form.errors
+            return JsonResponse(form_error, status=400)
+    else:
+        return JsonResponse({"error": "Invalid Request. Send POST request only to /register/volunteer/"}, status=400)
 
 
 def fetch_driver_data(request):

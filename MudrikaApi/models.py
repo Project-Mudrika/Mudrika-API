@@ -7,6 +7,14 @@ from django.template.defaultfilters import slugify
 # 0xd1CfE5c03730C4F93ag76a7d8424bA9122Bb4742
 
 
+class VolunteerProfileSignUpData(models.Model):
+    walletid = models.CharField(max_length=42, primary_key=True)
+    aadharngoid = models.CharField(max_length=50)
+    name = models.CharField(max_length=255)
+    profileimg = models.CharField(max_length=255)
+    voltype = models.CharField(max_length=32)
+
+
 class UserProfileSignUpData(models.Model):
     acc_address = models.CharField(max_length=50, primary_key=True)
     first_name = models.CharField(max_length=32)

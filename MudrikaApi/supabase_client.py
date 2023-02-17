@@ -56,11 +56,24 @@ def remove_access_key(access_phrase):
     return res
 
 
-def insert_into_db(accid, level, fname, lname, state, district, username):
+def insert_into_db_officer(accid, level, fname, lname, state, district, username):
     payload = locals()
 
     data = supabase.table('authority').insert(
         payload).execute()
+    return data
+
+
+def insert_into_db_volunteer(walletid, aadharngoid, name, profileimg, voltype):
+    payload = {
+        'walletid': walletid,
+        'aadharngoid': aadharngoid,
+        'name': name,
+        'profileimg': profileimg,
+        'voltype': voltype,
+    }
+
+    data = supabase.table('volunteer').insert(payload).execute()
     return data
 
 
