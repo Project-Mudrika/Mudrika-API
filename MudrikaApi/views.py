@@ -34,11 +34,24 @@ def fetch_all_user_data(request):
 def fetch_user_data(request):
     try:
         acc_id = request.GET.get("walletid", "")
+        usr_type=json.loads(fetch_type(acc_id))
+        if usr_type=="Authority":
+            if acc_id:
+                data = json.loads(fetch_single_user_data(acc_id).json())
+        if usr_type=="driver":
+                if acc_id:
+                    data = json.loads(fetch_single_driver_data(acc_id).json())
+        if usr_type=="volunteer":
+                if acc_id:
+                    data = json.loads(fetch_single_volunteer_data(acc_id).json())
+
+                
     except Exception as e:
         return JsonResponse({"Error in Request": e}, status=400)
-    else:
+
         if acc_id:
             data = json.loads(fetch_single_user_data(acc_id).json())
+
             return JsonResponse(data)
         else:
             return JsonResponse({"data": "Account ID (Wallet ID) not provided"}, status=400)

@@ -105,10 +105,19 @@ def fetch_single_user_data(accid):
     print(data1)
     return data1
 
+def fetch_type(accid):
+    datat = supabase.table('account').select ('sub_category').eq('accid',accid).execute()
+    return datat
 
 def fetch_single_driver_data(walletid):
     data1 = supabase.table('driver').select(
         'wallet_id,first_name,last_name,state,district,mobile_number').eq('wallet_id', walletid).execute()
+    print(data1)
+    return data1
+
+def fetch_single_volunteer_data(walletid):
+    data1 = supabase.table('volunteer').select(
+        'walletid,aadharngoid,name,state,profileimg,voltype').eq('wallet_id', walletid).execute()
     print(data1)
     return data1
 
