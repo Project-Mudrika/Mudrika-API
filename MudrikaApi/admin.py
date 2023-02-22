@@ -7,4 +7,4 @@ admin.site.register(AccessLevelTokenData)
 
 
 class UserProfileDummyAdmin(admin.ModelAdmin):
-    list_display = ("acc_address", "first_name", "last_name")
+    list_display = ("walletid", "first_name", "last_name")

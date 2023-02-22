@@ -21,7 +21,7 @@ from .contract_client import *
 def fetch_all_user_data(request):
     example_id = request.GET.get('walletid', '')
     user = UserProfileSignUpData.objects.filter(
-        acc_address=example_id).values()[0]
+        walletid=example_id).values()[0]
     # new_var = {
     # "wallet_id_return_value": example_id,
     # "user": name
@@ -33,9 +33,9 @@ def fetch_all_user_data(request):
 
 def fetch_user_data(request):
     try:
-        acc_id = request.GET.get("walletid", "")
+        acc_id = request.GET.get("walletId", "")
         usr_type=json.loads(fetch_type(acc_id))
-        if usr_type=="Authority":
+        if usr_type=="authority":
             if acc_id:
                 data = json.loads(fetch_single_user_data(acc_id).json())
         if usr_type=="driver":
@@ -101,7 +101,7 @@ def register_new_officer(request):
         if sign_up_form.is_valid():
             # sign up form data
             # {
-            #   "acc_address": "577g9H03rH09kT6hf",
+            #   "walletid": "577g9H03rH09kT6hf",
             #   "first_name": "Sudev",
             #   "last_name": "Suresh Sreedevi",
             #   "username": "sudevssuresh",
@@ -119,18 +119,20 @@ def register_new_officer(request):
 
             # store the user details into the database
             insert_into_db_officer(
-                accid=response_obj.get('acc_address'),
-                username=response_obj.get('username'),
+                accid=response_obj.get('walletid'),
                 level=access_level,
                 state=response_obj.get('state'),
                 district=response_obj.get('district'),
                 fname=response_obj.get('first_name'),
                 lname=response_obj.get('last_name')
             )
-
+            insert_into_account(
+                walletid=response_obj.get('walletid'),
+                sub_category=response_obj.get('sub_category')
+            )
             # add the user access details into contract
             add_user_contract(
-                account_id=response_obj['acc_address'], access_level=access_level, name=name)
+                account_id=response_obj['walletid'], access_level=access_level, name=name)
 
             # response_obj = {**response_obj, **access_level}
             remove_access_key(access_level_token)
@@ -184,7 +186,7 @@ def fetch_driver_data(request):
 #         if sign_up_form.is_valid():
 #             # sign up form data
 #             # {
-#             #   "acc_address": "577g9H03rH09kT6hf",
+#             #   "walletid": "577g9H03rH09kT6hf",
 #             #   "first_name": "Sudev",
 #             #   "last_name": "Suresh Sreedevi",
 #             #   "username": "sudevssuresh",
@@ -202,7 +204,7 @@ def fetch_driver_data(request):
 
 #             # store the user details into the database
 #             insert_into_db(
-#                 accid=response_obj.get('acc_address'),
+#                 accid=response_obj.get('walletid'),
 #                 username=response_obj.get('username'),
 #                 level=access_level,
 #                 state=response_obj.get('state'),
@@ -213,7 +215,7 @@ def fetch_driver_data(request):
 
 #             # add the user access details into contract
 #             add_user_contract(
-#                 account_id=response_obj['acc_address'], access_level=access_level, name=name)
+#                 account_id=response_obj['walletid'], access_level=access_level, name=name)
 
 #             # response_obj = {**response_obj, **access_level}
 #             remove_access_key(access_level_token)

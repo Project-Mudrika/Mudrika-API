@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserProfileDummy',
             fields=[
-                ('acc_address', models.CharField(max_length=50, primary_key=True, serialize=False)),
+                ('walletid', models.CharField(max_length=50, primary_key=True, serialize=False)),
                 ('first_name', models.CharField(max_length=32)),
                 ('last_name', models.CharField(max_length=32)),
                 ('state', models.CharField(max_length=60)),

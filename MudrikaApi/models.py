@@ -16,7 +16,7 @@ class VolunteerProfileSignUpData(models.Model):
 
 
 class UserProfileSignUpData(models.Model):
-    acc_address = models.CharField(max_length=50, primary_key=True)
+    walletid = models.CharField(max_length=50, primary_key=True)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
     username = models.CharField(max_length=24)
