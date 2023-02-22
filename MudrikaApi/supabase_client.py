@@ -1,11 +1,8 @@
 import os
 from supabase import create_client, Client
 
-
 from dotenv import load_dotenv
-
 load_dotenv()
-
 url: str = os.environ.get("SUPABASE_URL")
 key: str = os.environ.get("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
@@ -15,12 +12,11 @@ def insert_into_access_level(access_level, state, district, access_phrase):
     """
     Insert access level data into db
     """
-    data = locals()  # this creates a dict with the function params
+    data = locals()  
+    # this creates a dict with the function params
     res = supabase.table('AccessLevelTokenData').insert(
         data).execute()
-
     return res
-
 
 def insert_into_consignment(cons_id, con_name, quantity, location, sender, curr_holder, receiver):
     """
@@ -60,6 +56,13 @@ def insert_into_db_officer(accid, level, fname, lname, state, district, username
     payload = locals()
 
     data = supabase.table('authority').insert(
+        payload).execute()
+    return data
+
+def insert_into_account(walletid,sub_category):
+    payload = locals()
+
+    data = supabase.table('account').insert(
         payload).execute()
     return data
 
