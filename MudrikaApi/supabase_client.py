@@ -67,14 +67,16 @@ def insert_into_account(walletid,sub_category):
     return data
 
 
-def insert_into_db_volunteer(walletid, aadharngoid, name, profileimg, voltype):
+def insert_into_db_volunteer(walletid, aadharngoid, name, profileimg, voltype,about,activities):
     payload = {
         'walletid': walletid,
         'aadharngoid': aadharngoid,
         'name': name,
         'profileimg': profileimg,
         'voltype': voltype,
-    }
+        'about':about,
+        'activities': activities,
+ }
 
     data = supabase.table('volunteer').insert(payload).execute()
     return data
