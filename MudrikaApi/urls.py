@@ -9,6 +9,8 @@ urlpatterns = [
          name="fetch_national_officers"),
     path('register/officer/', register_new_officer, name="registerOfficer"),
     path('register/volunteer/', register_new_volunteer, name="registerVolunteer"),
+    path('volunteer/add-activity', add_new_activity, name="addActivities"),
+    path('volunteer/fetch-activities', get_activities, name="addActivities"),
     path('new-access-token/', generate_new_access_token, name='new_access_token'),
     path('new-consignment/', new_consignment, name='new_consignment'),
 ]

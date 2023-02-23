@@ -63,6 +63,22 @@ def fetch_national_officer_data(request):
     except Exception as e:
         return JsonResponse({"Error in Request": e}, status=400)
 
+def get_activities(request):
+    acc_id = request.GET.get("walletId", "")
+    try:
+        return JsonResponse({"data": get_activities(acc_id)})
+    except Exception as e:
+        return JsonResponse({"Error in Request": e}, status=400)
+
+@csrf_exempt
+@api_view(["POST"])
+def add_new_activity(request):
+    try:
+        body = dict(request.POST)
+        return JsonResponse(insert_into_volunteer_activities(body["walletId"],body["activities"]))
+    except Exception as e:
+        return JsonResponse({"Error in Request": str(e)}, status=400, safe=False)
+
 
 @csrf_exempt
 @api_view(["POST"])

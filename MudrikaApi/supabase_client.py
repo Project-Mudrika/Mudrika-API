@@ -75,12 +75,25 @@ def insert_into_db_volunteer(walletid, aadharngoid, name, profileimg, voltype,ab
         'profileimg': profileimg,
         'voltype': voltype,
         'about':about,
-        'activities': activities,
+        
  }
 
     data = supabase.table('volunteer').insert(payload).execute()
     return data
 
+def insert_into_volunteer_activities(walletid,activities):
+    payload = { 
+        'walletid': walletid,
+        'activities': activities ,
+    }
+    data = supabase.table('volunteer').insert(payload).execute()
+    print(data)
+    print(type(data))
+    return data
+
+def get_activities(walletid):
+    activities=supabase.table('volunteer').select('activities').eq('walletid',walletid).execute()
+    return activities
 
 def insert_into_db_driver(received_payload):
     data = supabase.table('driver').insert(received_payload).execute()
@@ -149,3 +162,4 @@ def get_national_officers():
     officers = supabase.table('authority').select(
         'accid, fname, lname').eq('level', 'national').execute()
     return list(officers)[0][1]
+
