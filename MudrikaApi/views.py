@@ -34,27 +34,24 @@ def fetch_all_user_data(request):
 def fetch_user_data(request):
     try:
         acc_id = request.GET.get("walletId", "")
-        usr_type=json.loads(fetch_type(acc_id))
-        if usr_type=="authority":
+        usr_type = json.loads(fetch_type(acc_id))["data"][0]["sub_category"]
+        
+        data = None
+        if usr_type == "authority":
             if acc_id:
                 data = json.loads(fetch_single_user_data(acc_id).json())
-        if usr_type=="driver":
-                if acc_id:
-                    data = json.loads(fetch_single_driver_data(acc_id).json())
-        if usr_type=="volunteer":
-                if acc_id:
-                    data = json.loads(fetch_single_volunteer_data(acc_id).json())
+        if usr_type == "driver":
+            if acc_id:
+                data = json.loads(fetch_single_driver_data(acc_id).json())
+        if usr_type == "volunteer":
+            if acc_id:
+                data = json.loads(fetch_single_volunteer_data(acc_id).json())
+        
+        return JsonResponse({"walletId": acc_id, "type": usr_type,
+                             **data})
 
-                
     except Exception as e:
-        return JsonResponse({"Error in Request": e}, status=400)
-
-        if acc_id:
-            data = json.loads(fetch_single_user_data(acc_id).json())
-
-            return JsonResponse(data)
-        else:
-            return JsonResponse({"data": "Account ID (Wallet ID) not provided"}, status=400)
+        return JsonResponse({"Error in Request": str(e)}, status=400, safe=False)
 
 
 def fetch_national_officer_data(request):
@@ -119,7 +116,7 @@ def register_new_officer(request):
 
             # store the user details into the database
             insert_into_db_officer(
-                accid=response_obj.get('walletid'),
+                walletid=response_obj.get('walletid'),
                 level=access_level,
                 state=response_obj.get('state'),
                 district=response_obj.get('district'),
@@ -144,7 +141,7 @@ def register_new_officer(request):
     else:
         return JsonResponse({"error": "Invalid Request. Send POST request only to /register/officer/"}, status=400)
 
-        # payload = {'accid': '123', 'level': "district", 'fname': "arya",
+        # payload = {'walletid': '123', 'level': "district", 'fname': "arya",
         #            'lname': "sreejith", 'state': "kerala", 'district': "tvm", 'username': "arya"}
 
 
@@ -204,7 +201,7 @@ def fetch_driver_data(request):
 
 #             # store the user details into the database
 #             insert_into_db(
-#                 accid=response_obj.get('walletid'),
+#                 walletid=response_obj.get('walletid'),
 #                 username=response_obj.get('username'),
 #                 level=access_level,
 #                 state=response_obj.get('state'),
