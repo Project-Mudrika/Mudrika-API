@@ -34,18 +34,17 @@ def fetch_all_user_data(request):
 def fetch_user_data(request):
     try:
         acc_id = request.GET.get("walletId", "")
-        usr_type=json.loads(fetch_type(acc_id))
-        if usr_type=="authority":
+        usr_type = json.loads(fetch_type(acc_id))
+        if usr_type == "authority":
             if acc_id:
                 data = json.loads(fetch_single_user_data(acc_id).json())
-        if usr_type=="driver":
-                if acc_id:
-                    data = json.loads(fetch_single_driver_data(acc_id).json())
-        if usr_type=="volunteer":
-                if acc_id:
-                    data = json.loads(fetch_single_volunteer_data(acc_id).json())
+        if usr_type == "driver":
+            if acc_id:
+                data = json.loads(fetch_single_driver_data(acc_id).json())
+        if usr_type == "volunteer":
+            if acc_id:
+                data = json.loads(fetch_single_volunteer_data(acc_id).json())
 
-                
     except Exception as e:
         return JsonResponse({"Error in Request": e}, status=400)
 
@@ -63,19 +62,23 @@ def fetch_national_officer_data(request):
     except Exception as e:
         return JsonResponse({"Error in Request": e}, status=400)
 
+
 def get_activities(request):
     acc_id = request.GET.get("walletId", "")
     try:
-        return JsonResponse({"data": get_activities(acc_id)})
+        json_str = json.dumps(get_activities(acc_id))
+        print(type(json_str))
+        return JsonResponse({"data": json_str})
     except Exception as e:
         return JsonResponse({"Error in Request": e}, status=400)
+
 
 @csrf_exempt
 @api_view(["POST"])
 def add_new_activity(request):
     try:
         body = dict(request.POST)
-        return JsonResponse(insert_into_volunteer_activities(body["walletId"],body["activities"]))
+        return JsonResponse(insert_into_volunteer_activities(body["walletId"][0], body["activities"][0]), safe=False)
     except Exception as e:
         return JsonResponse({"Error in Request": str(e)}, status=400, safe=False)
 

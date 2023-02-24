@@ -1,6 +1,6 @@
 import os
 from supabase import create_client, Client
-
+import json
 from dotenv import load_dotenv
 load_dotenv()
 url: str = os.environ.get("SUPABASE_URL")
@@ -12,11 +12,12 @@ def insert_into_access_level(access_level, state, district, access_phrase):
     """
     Insert access level data into db
     """
-    data = locals()  
+    data = locals()
     # this creates a dict with the function params
     res = supabase.table('AccessLevelTokenData').insert(
         data).execute()
     return res
+
 
 def insert_into_consignment(cons_id, con_name, quantity, location, sender, curr_holder, receiver):
     """
@@ -59,7 +60,8 @@ def insert_into_db_officer(accid, level, fname, lname, state, district, username
         payload).execute()
     return data
 
-def insert_into_account(walletid,sub_category):
+
+def insert_into_account(walletid, sub_category):
     payload = locals()
 
     data = supabase.table('account').insert(
@@ -67,33 +69,42 @@ def insert_into_account(walletid,sub_category):
     return data
 
 
-def insert_into_db_volunteer(walletid, aadharngoid, name, profileimg, voltype,about,activities):
+def insert_into_db_volunteer(walletid, aadharngoid, name, profileimg, voltype, about, activities):
     payload = {
         'walletid': walletid,
         'aadharngoid': aadharngoid,
         'name': name,
         'profileimg': profileimg,
         'voltype': voltype,
-        'about':about,
-        
- }
+        'about': about,
 
-    data = supabase.table('volunteer').insert(payload).execute()
-    return data
-
-def insert_into_volunteer_activities(walletid,activities):
-    payload = { 
-        'walletid': walletid,
-        'activities': activities ,
     }
+
     data = supabase.table('volunteer').insert(payload).execute()
-    print(data)
-    print(type(data))
     return data
+
 
 def get_activities(walletid):
-    activities=supabase.table('volunteer').select('activities').eq('walletid',walletid).execute()
-    return activities
+    activities = supabase.table('volunteer').select(
+        'activities').eq('walletid', walletid).execute()
+    return activities.json()
+
+
+def insert_into_volunteer_activities(walletid, activities):
+    activities_array = json.loads(get_activities(
+        walletid))["data"][0]['activities']
+
+    if activities_array == None:
+        data = supabase.table("volunteer").update(
+            {"activities": "{" + activities + "}"}).eq('walletid', walletid).execute()
+    else:
+        activities_array.append(activities)
+
+        data = supabase.table("volunteer").update(
+            {"activities": activities_array}).eq('walletid', walletid).execute()
+
+    return data.json()
+
 
 def insert_into_db_driver(received_payload):
     data = supabase.table('driver').insert(received_payload).execute()
@@ -123,15 +134,19 @@ def fetch_single_user_data(accid):
     print(data1)
     return data1
 
+
 def fetch_type(accid):
-    datat = supabase.table('account').select ('sub_category').eq('accid',accid).execute()
+    datat = supabase.table('account').select(
+        'sub_category').eq('accid', accid).execute()
     return datat
+
 
 def fetch_single_driver_data(walletid):
     data1 = supabase.table('driver').select(
         'wallet_id,first_name,last_name,state,district,mobile_number').eq('wallet_id', walletid).execute()
     print(data1)
     return data1
+
 
 def fetch_single_volunteer_data(walletid):
     data1 = supabase.table('volunteer').select(
@@ -162,4 +177,3 @@ def get_national_officers():
     officers = supabase.table('authority').select(
         'accid, fname, lname').eq('level', 'national').execute()
     return list(officers)[0][1]
-
