@@ -13,11 +13,12 @@ def insert_into_access_level(access_level, state, district, access_phrase):
     """
     Insert access level data into db
     """
-    data = locals()  
+    data = locals()
     # this creates a dict with the function params
     res = supabase.table('AccessLevelTokenData').insert(
         data).execute()
     return res
+
 
 def insert_into_consignment(cons_id, con_name, quantity, location, sender, curr_holder, receiver):
     """
@@ -60,7 +61,8 @@ def insert_into_db_officer(walletid, level, fname, lname, state, district):
         payload).execute()
     return data
 
-def insert_into_account(walletid,sub_category):
+
+def insert_into_account(walletid, sub_category):
     payload = locals()
 
     data = supabase.table('account').insert(
@@ -68,16 +70,16 @@ def insert_into_account(walletid,sub_category):
     return data
 
 
-def insert_into_db_volunteer(walletid, aadharngoid, name, profileimg, voltype,about,activities):
+def insert_into_db_volunteer(walletid, aadharngoid, name, profileimg, voltype, about="", activities=[""]):
     payload = {
         'walletid': walletid,
         'aadharngoid': aadharngoid,
         'name': name,
         'profileimg': profileimg,
         'voltype': voltype,
-        'about':about,
+        'about': about,
         'activities': activities,
- }
+    }
 
     data = supabase.table('volunteer').insert(payload).execute()
     return data
@@ -113,7 +115,8 @@ def fetch_single_user_data(walletid):
 
 
 def fetch_type(walletid):
-    response = supabase.table('account').select ('sub_category').eq('walletid',walletid).execute()
+    response = supabase.table('account').select(
+        'sub_category').eq('walletid', walletid).execute()
     json_string = response.json()
     data = json.loads(json_string)
     return json_string
@@ -124,6 +127,7 @@ def fetch_single_driver_data(walletid):
         'walletid,first_name,last_name,state,district,mobile_number').eq('walletid', walletid).execute()
     print(data1)
     return data1
+
 
 def fetch_single_volunteer_data(walletid):
     data1 = supabase.table('volunteer').select(
