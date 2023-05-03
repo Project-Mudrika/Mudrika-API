@@ -11,4 +11,6 @@ urlpatterns = [
     path('register/volunteer/', register_new_volunteer, name="registerVolunteer"),
     path('new-access-token/', generate_new_access_token, name='new_access_token'),
     path('new-consignment/', new_consignment, name='new_consignment'),
+    path('volunteer/new-activity/',
+         add_new_volunteer_activity, name='new_activity'),
 ]

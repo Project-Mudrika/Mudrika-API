@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import UserProfileSignUpData, AccessLevelTokenData, NewConsignmentData, VolunteerProfileSignUpData
+from .models import UserProfileSignUpData, AccessLevelTokenData, NewConsignmentData, VolunteerProfileSignUpData, VolunteerActivityData
 
 
 class AccessLevelForm(ModelForm):
@@ -17,6 +17,12 @@ class SignUpForm(ModelForm):
 class VolunteerSignUpForm(ModelForm):
     class Meta:
         model = VolunteerProfileSignUpData
+        fields = "__all__"
+
+
+class VolunteerActivityForm(ModelForm):
+    class Meta:
+        model = VolunteerActivityData
         fields = "__all__"
 
 

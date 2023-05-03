@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 
 from .models import AccessLevelTokenData, UserProfileSignUpData
-from .forms import AccessLevelForm, SignUpForm, ConsignmentForm, VolunteerSignUpForm
+from .forms import AccessLevelForm, SignUpForm, ConsignmentForm, VolunteerSignUpForm, VolunteerActivityForm
 from .supabase_client import *
 from .contract_client import *
 
@@ -35,7 +35,7 @@ def fetch_user_data(request):
     try:
         acc_id = request.GET.get("walletId", "")
         usr_type = json.loads(fetch_type(acc_id))["data"][0]["sub_category"]
-        
+
         data = None
         if usr_type == "authority":
             if acc_id:
@@ -46,7 +46,7 @@ def fetch_user_data(request):
         if usr_type == "volunteer":
             if acc_id:
                 data = json.loads(fetch_single_volunteer_data(acc_id).json())
-        
+
         return JsonResponse({"walletId": acc_id, "type": usr_type,
                              **data})
 
@@ -264,3 +264,22 @@ def new_consignment(request):
             return JsonResponse(form_error, status=400)
     else:
         return JsonResponse({"error": "Invalid Request. Send POST request only"}, status=400)
+
+
+@csrf_exempt
+def add_new_volunteer_activity(request):
+    if request.method == "POST":
+        new_activity_form = VolunteerActivityForm(request.POST)
+        print(new_activity_form)
+        print(f"Cleaned Data: {new_activity_form.cleaned_data}")
+        if new_activity_form.is_valid():
+            print(f"Cleaned Data: {new_activity_form.cleaned_data}")
+
+            add_activity_to_volunteer(**new_activity_form.cleaned_data)
+
+            return JsonResponse(new_activity_form.cleaned_data, status=200)
+        else:
+            form_error = new_activity_form.errors
+            return JsonResponse(form_error, status=400)
+    else:
+        return JsonResponse({"error": "Invalid Request. Send POST request only to /volunteer/new-activity/"}, status=400)

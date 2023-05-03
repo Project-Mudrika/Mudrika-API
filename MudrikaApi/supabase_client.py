@@ -1,6 +1,7 @@
 import json
 import os
 from supabase import create_client, Client
+import datetime
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -82,6 +83,19 @@ def insert_into_db_volunteer(walletid, aadharngoid, name, profileimg, voltype, a
     }
 
     data = supabase.table('volunteer').insert(payload).execute()
+    return data
+
+
+def add_activity_to_volunteer(walletid, description, date, imageLink):
+    new_activity = {
+        "walletid": walletid,
+        "description": description,
+        "date": date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+        "imageLink": imageLink,
+    }
+
+    data = supabase.table('volunteer').update(
+        {"activities": [new_activity]}).eq("walletid", walletid).execute()
     return data
 
 
