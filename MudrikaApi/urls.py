@@ -13,4 +13,6 @@ urlpatterns = [
     path('new-consignment/', new_consignment, name='new_consignment'),
     path('volunteer/new-activity/',
          add_new_volunteer_activity, name='new_activity'),
+    path('volunteer/fetch-activities/',
+         fetch_volunteer_activity, name='fetch_activities'),
 ]

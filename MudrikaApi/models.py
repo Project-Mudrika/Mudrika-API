@@ -17,6 +17,7 @@ class VolunteerProfileSignUpData(models.Model):
 
 class VolunteerActivityData(models.Model):
     walletid = models.CharField(max_length=42, primary_key=True)
+    username = models.CharField(max_length=64)
     description = models.CharField(max_length=255)
     date = models.DateTimeField()
     imageLink = models.URLField()

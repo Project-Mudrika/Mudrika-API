@@ -283,3 +283,16 @@ def add_new_volunteer_activity(request):
             return JsonResponse(form_error, status=400)
     else:
         return JsonResponse({"error": "Invalid Request. Send POST request only to /volunteer/new-activity/"}, status=400)
+
+
+def fetch_volunteer_activity(request):
+    try:
+        walletid = request.GET.get("walletId", "")
+    except Exception as e:
+        return JsonResponse({"Error in Response", e}, status=400)
+    else:
+        if walletid:
+            data = json.loads(fetch_activity_from_volunteer(walletid).json())
+            return JsonResponse(data)
+        else:
+            return JsonResponse({"data": "Account ID (Wallet ID) not provided"}, status=400)

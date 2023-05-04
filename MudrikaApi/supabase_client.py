@@ -86,16 +86,30 @@ def insert_into_db_volunteer(walletid, aadharngoid, name, profileimg, voltype, a
     return data
 
 
-def add_activity_to_volunteer(walletid, description, date, imageLink):
+def add_activity_to_volunteer(walletid, username, description, date, imageLink):
     new_activity = {
         "walletid": walletid,
+        "username": username,
         "description": description,
         "date": date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
         "imageLink": imageLink,
     }
 
+    current_array_data = fetch_activity_from_volunteer(walletid)
+    current_array = json.loads(current_array_data.json())[
+        'data'][0]['activities']
+
+    if current_array == [""]:
+        current_array = []
+
     data = supabase.table('volunteer').update(
-        {"activities": [new_activity]}).eq("walletid", walletid).execute()
+        {"activities": [new_activity] + current_array}).eq("walletid", walletid).execute()
+    return data
+
+
+def fetch_activity_from_volunteer(walletid):
+    data = supabase.table('volunteer').select(
+        'activities').eq('walletid', walletid).execute()
     return data
 
 
@@ -148,24 +162,6 @@ def fetch_single_volunteer_data(walletid):
         'walletid,aadharngoid,name,profileimg,voltype').eq('walletid', walletid).execute()
     print(data1)
     return data1
-
-# insert_into_db("1010","national","Neeraj","Krishna","Kerala","klm","neerajkrishna")
-# fetch_all_data()
-
-    # insert_into_db("1009", "national", "Devu", "diya", "kerala", "tvm", "devudiya")
-    # fetch_all_data()
-
-    # data = supabase.table('authority').select('walletid').execute()
-    # print(data)
-    # data = supabase.table('authority').insert({'walletid': '1335', 'fname': "aarya" }).execute()
-    # assert if insert response is a success
-    # assert data.get("status_code") in (200, 201)
-    # data = supabase.table('authority').select('walletid').execute()
-    # print(data)
-
-    # bulk insert
-    # data = supabase.table('cities').insert([
-    # {'name': 'Gotham', 'country_id': 556 },
 
 
 def get_national_officers():
