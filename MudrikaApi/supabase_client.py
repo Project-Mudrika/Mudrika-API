@@ -112,6 +112,19 @@ def fetch_activity_from_volunteer(walletid):
         'activities').eq('walletid', walletid).execute()
     return data
 
+def fetch_all_volunteer_activites():
+    result = supabase.table('volunteer').select("walletid, activities").execute()
+
+# Group activities by volunteer
+    volunteer_activities = {}
+    for volunteer in result.data:
+        walletid = volunteer.get("walletid")
+        activities = volunteer.get("activities", [])
+        volunteer_activities[walletid] = activities
+
+    # Print volunteer activities
+    return volunteer_activities
+
 
 def insert_into_db_driver(received_payload):
     data = supabase.table('driver').insert(received_payload).execute()

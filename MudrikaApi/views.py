@@ -295,4 +295,6 @@ def fetch_volunteer_activity(request):
             data = json.loads(fetch_activity_from_volunteer(walletid).json())
             return JsonResponse(data)
         else:
-            return JsonResponse({"data": "Account ID (Wallet ID) not provided"}, status=400)
+            # data = json.loads(fetch_all_volunteer_activites().json())
+            data = fetch_all_volunteer_activites()
+            return JsonResponse(data)
