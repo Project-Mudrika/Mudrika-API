@@ -123,10 +123,10 @@ def register_new_officer(request):
                 fname=response_obj.get('first_name'),
                 lname=response_obj.get('last_name')
             )
-            insert_into_account(
-                walletid=response_obj.get('walletid'),
-                sub_category=response_obj.get('sub_category')
-            )
+            # insert_into_account(
+            #     walletid=response_obj.get('walletid'),
+            #     sub_category=response_obj.get('sub_category')
+            # )
             # add the user access details into contract
             add_user_contract(
                 account_id=response_obj['walletid'], access_level=access_level, name=name)
